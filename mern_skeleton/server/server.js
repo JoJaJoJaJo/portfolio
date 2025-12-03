@@ -1,14 +1,16 @@
 import mongoose from 'mongoose';
-import config from './config/config.js';
-import app from './server/express.js';
+import express from 'express';  // ADD THIS!
+import config from '../config/config.js';
+import app from './express.js';  // FIXED PATH
+
+// Import routes - FIXED PATHS
+import contactRoutes from '../server/routes/contactRoutes.js';
+import projectRoutes from '../server/routes/projectRoutes.js';
+import educationRoutes from '../server/routes/educationRoutes.js';
+import userRoutes from '../server/routes/userRoutes.js';
+
 import path from 'path';
 import { fileURLToPath } from 'url';
-
-// Import routes
-import contactRoutes from './server/routes/contactRoutes.js';
-import projectRoutes from './server/routes/projectRoutes.js';
-import educationRoutes from './server/routes/educationRoutes.js';
-import userRoutes from './server/routes/userRoutes.js';
 
 // For ES6 __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
@@ -78,7 +80,7 @@ if (process.env.NODE_ENV === 'production') {
   // Assuming frontend is built to '../client/dist' relative to server.js location
   const clientPath = path.join(__dirname, '../../client/dist');
   
-  app.use(express.static(clientPath));
+  app.use(express.static(clientPath));  // Now express is imported
   
   // Serve React app for any unknown routes
   app.get('*', (req, res) => {
@@ -86,6 +88,22 @@ if (process.env.NODE_ENV === 'production') {
   });
   
   console.log('📁 Serving static files from:', clientPath);
+}
+
+function startServer() {
+  app.listen(PORT, () => {
+    console.log('='.repeat(60));
+    console.log('🚀 PORTFOLIO BACKEND DEPLOYED ON RENDER');
+    console.log('='.repeat(60));
+    console.log('🌐 Server URL: http://localhost:' + PORT);
+    console.log('🔗 Public URL: https://your-app-name.onrender.com');
+    console.log('📊 Database Status:', mongoose.connection.readyState === 1 ? '✅ Connected' : '❌ Disconnected');
+    console.log('⚙️  Environment:', process.env.NODE_ENV || 'development');
+    console.log('💾 MongoDB Database:', mongoose.connection.name || 'Not connected');
+    console.log('='.repeat(60));
+    console.log('✅ Server is running!');
+    console.log('='.repeat(60));
+  });
 }
 
 // Handle process termination
